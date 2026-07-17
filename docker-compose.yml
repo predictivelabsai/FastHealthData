@@ -1,0 +1,22 @@
+services:
+  fasthealthdata:
+    build: .
+    ports:
+      - "5013:5013"
+    environment:
+      FASTHEALTHDATA_DB: /data/fasthealthdata.sqlite
+      FASTHEALTHDATA_PORT: "5013"
+      MODEL_PROVIDER: ${MODEL_PROVIDER:-xai}
+      MODEL_NAME: ${MODEL_NAME:-grok-4-1-fast-reasoning}
+      XAI_API_KEY: ${XAI_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      FASTHEALTHDATA_ADMIN_EMAIL: ${FASTHEALTHDATA_ADMIN_EMAIL:-admin@fasthealthdata.example}
+      FASTHEALTHDATA_ADMIN_PASSWORD: ${FASTHEALTHDATA_ADMIN_PASSWORD:-FastHealthData2026$$}
+      FASTHEALTHDATA_SECRET: ${FASTHEALTHDATA_SECRET:-}
+      FASTHEALTHDATA_PSEUDO_SALT: ${FASTHEALTHDATA_PSEUDO_SALT:-}
+    volumes:
+      - fasthealthdata-data:/data
+volumes:
+  fasthealthdata-data:
