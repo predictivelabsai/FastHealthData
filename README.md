@@ -49,6 +49,9 @@ A minimal but runnable skeleton of the core capabilities a health data platform 
   outcome, enrolment). Aggregates only — no subject-level data leaves the platform.
 - **AI assistant** — a right-rail chat that answers over a live snapshot of the
   platform (text-to-insight). Slash-commands work with **no API key**.
+- **Typed integration API** — OpenAPI-described projects, catalog registration,
+  governed access decisions, audit evidence, aggregate cohort analytics,
+  pseudonymisation, and k-anonymity workflow contracts.
 
 ## Quickstart (native)
 
@@ -114,6 +117,29 @@ XAI_API_KEY=...
 
 Without a key the whole app still works and slash-commands answer from SQLite.
 
+## Integration API
+
+The FastAPI integration surface is mounted at `/api`, with human documentation
+at `/developers`, Swagger UI at `/api/docs`, ReDoc at `/api/redoc`, and the
+runtime schema at `/api/openapi.json`. A stable generated snapshot is committed
+as `swagger.json`.
+
+Public routes expose only synthetic project/catalog metadata and aggregate
+cohort analytics. Set `FASTHEALTHDATA_API_TOKEN` (or the fleet-compatible
+`FASTSME_API_TOKEN`) to enable project and dataset registration, lifecycle
+changes, catalog-variable curation, users, access requests and decisions, audit
+evidence, pseudonymisation, and k-anonymity signals:
+
+```bash
+curl https://healthdata.fastsme.com/api/v1/summary
+curl -H "Authorization: Bearer $FASTHEALTHDATA_API_TOKEN" \
+  https://healthdata.fastsme.com/api/v1/access-requests
+```
+
+The catalog API accepts metadata and mappings, not raw subject-level rows. The
+pseudonymisation and k-anonymity endpoints are explicit demo workflow contracts;
+they are not production disclosure-control guarantees.
+
 ## Architecture
 
 ```
@@ -124,6 +150,8 @@ web/layout.py     3-pane shell, CSS, chat JS
 web/views.py      page renderers
 web/ai.py         slash-commands + multi-provider streaming chat
 web/charts.py     Plotly chart specs (client-side render, no server plotting dep)
+web/api.py        typed integration API + token-gated governance operations
+web/developer.py  public API entry point
 ```
 
 See **[SKILLS.md](SKILLS.md)** for the capability reference.

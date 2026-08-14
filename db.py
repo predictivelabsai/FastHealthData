@@ -304,6 +304,47 @@ def variables_for(did: int):
     return rows("SELECT * FROM variables WHERE dataset_id=? ORDER BY is_pii DESC, name", (did,))
 
 
+def create_dataset(project_id, name, standard, sensitivity, subject_count,
+                   steward_id=None, actor="admin") -> int:
+    with cursor() as conn:
+        conn.execute(
+            """INSERT INTO datasets(project_id,name,standard,sensitivity,subject_count,steward_id,created)
+               VALUES (?,?,?,?,?,?,?)""",
+            (project_id, name, standard, sensitivity, subject_count, steward_id,
+             _ts(datetime.now())),
+        )
+        dataset_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
+    log(actor, f"Registered dataset “{name}”", "dataset", dataset_id)
+    return dataset_id
+
+
+def update_dataset(dataset_id, *, standard, sensitivity, subject_count,
+                   steward_id=None, actor="admin") -> bool:
+    with cursor() as conn:
+        changed = conn.execute(
+            """UPDATE datasets
+               SET standard=?, sensitivity=?, subject_count=?, steward_id=?
+               WHERE id=?""",
+            (standard, sensitivity, subject_count, steward_id, dataset_id),
+        ).rowcount
+    if changed:
+        log(actor, "Updated dataset governance metadata", "dataset", dataset_id)
+    return bool(changed)
+
+
+def create_variable(dataset_id, name, concept, data_type, standard_code,
+                    is_pii=False, actor="admin") -> int:
+    with cursor() as conn:
+        conn.execute(
+            """INSERT INTO variables(dataset_id,name,concept,data_type,standard_code,is_pii)
+               VALUES (?,?,?,?,?,?)""",
+            (dataset_id, name, concept, data_type, standard_code, int(bool(is_pii))),
+        )
+        variable_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
+    log(actor, f"Catalogued variable “{name}”", "variable", variable_id)
+    return variable_id
+
+
 # --- access governance -------------------------------------------------------
 
 def access_requests(status: str = "All"):

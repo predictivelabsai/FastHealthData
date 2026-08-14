@@ -33,6 +33,8 @@ from starlette.responses import StreamingResponse, Response
 import db
 from web.layout import page, LAYOUT_CSS
 from web import views, ai
+from web.api import api
+from web.developer import developer_page
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s — %(message)s")
 logger = logging.getLogger("fasthealthdata")
@@ -44,6 +46,7 @@ SECRET = os.getenv("FASTHEALTHDATA_SECRET", secrets.token_hex(32))
 PORT = int(os.getenv("FASTHEALTHDATA_PORT", "5013"))
 
 app, rt = fast_app(live=False, pico=False, secret_key=SECRET, hdrs=[Style(LAYOUT_CSS)])
+app.mount("/api", api)
 
 
 def _user(session):
@@ -95,6 +98,11 @@ def post(session, email: str = "", password: str = ""):
 def get(session):
     session.pop("user", None)
     return RedirectResponse("/login", status_code=303)
+
+
+@rt("/developers")
+def get():
+    return developer_page()
 
 
 # --- overview ---------------------------------------------------------------

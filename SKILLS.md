@@ -27,6 +27,20 @@ platform in the FastGov suite. Built on the shared FastHTML app shell (see
 | Analytics | `/analytics` | Plotly charts over the synthetic cohort |
 | Audit Log | `/audit` | Append-only governance events |
 | AI Assistant | `/ai` | Landing; chat is the right rail |
+| Developers | `/developers` | Human API overview and links to Swagger, ReDoc, and OpenAPI |
+
+### Integration API (`/api`)
+
+- Public synthetic reads: health, portfolio summary, projects, catalog,
+  variables, roles, and aggregate cohort analytics.
+- Token-gated governance: project registration/stages, dataset and variable
+  registration, users, access requests/decisions, audit evidence,
+  pseudonymisation, and k-anonymity signals.
+- Configure `FASTHEALTHDATA_API_TOKEN` (or `FASTSME_API_TOKEN`). Runtime OpenAPI
+  is `/api/openapi.json`; the committed compatibility snapshot is
+  `swagger.json`.
+- Catalog registration accepts metadata and mappings only. There is deliberately
+  no raw subject-row upload endpoint.
 
 ### Data model (`db.py`)
 
