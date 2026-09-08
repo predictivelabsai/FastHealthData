@@ -159,3 +159,7 @@ See **[SKILLS.md](SKILLS.md)** for the capability reference.
 ## Licence
 
 MIT © 2026 Predictive Labs Ltd. Part of the **FastGov** open-source suite.
+
+## Public landing
+
+`web/landing.py` provides a FastHTML marketing landing (including Pricing: BYOC free / Host with us €1/month). Wire `landing_page` to the public `/` route once the app shell exists.

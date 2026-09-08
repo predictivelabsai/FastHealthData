@@ -1,1 +1,1 @@
-"""FastHealthData web package."""
+"""Web package."""
