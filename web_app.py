@@ -1,3 +1,4 @@
+from web.landing import landing_page
 """FastHealthData — an open-source health research-data platform built with FastHTML.
 
 A server-side, HTMX-driven platform to manage health research projects and their
@@ -109,7 +110,10 @@ def get():
 
 @rt("/")
 def get(session):
+    if not _user(session):
+        return landing_page()
     return _guard(session, "dashboard", views.dashboard)
+
 
 
 # --- projects ---------------------------------------------------------------
